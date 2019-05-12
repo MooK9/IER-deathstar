@@ -11,9 +11,11 @@ import mining.MiningPlanet.Move;
 
 public class WorldModel extends GridWorldModel {
 
-    public static final int   GOLD  = 16;
-    public static final int   DEPOT = 32;
-    public static final int   ENEMY = 64;
+    public static final int   DAMAGE_TO_GOLD  = 16;
+    public static final int   GOLD  = 240;
+    public static final int   DEPOT = 4096;
+    public static final int   DAMAGE_TO_ENEMY = 256;
+    public static final int   ENEMY = 3840;
 
     Location                  depot;
     Set<Integer>              agWithGold;  // which agent is carrying gold
@@ -92,6 +94,15 @@ public class WorldModel extends GridWorldModel {
     public void setAgNotCarryingGold(int ag) {
         agWithGold.remove(ag);
     }
+    
+    public void subtract(int value, Location l) {
+        subtract(value, l.x, l.y);
+    }
+
+    public void subtract(int value, int x, int y) {
+        data[x][y] -= value;
+        if (view != null) view.update(x,y);
+    }
 
     /** Actions **/
 
@@ -124,17 +135,15 @@ public class WorldModel extends GridWorldModel {
 
     boolean pick(int ag) {
         Location l = getAgPos(ag);
-        if (hasObject(WorldModel.GOLD, l.x, l.y)) {
-            if (!isCarryingGold(ag)) {
-                remove(WorldModel.GOLD, l.x, l.y);
-                setAgCarryingGold(ag);
-                return true;
-            } else {
-                logger.warning("Agent " + (ag + 1) + " is trying the pick gold, but it is already carrying gold!");
-            }
-        } else {
-            logger.warning("Agent " + (ag + 1) + " is trying the pick gold, but there is no gold at " + l.x + "x" + l.y + "!");
+        if (hasObject(GOLD, l.x, l.y)) {
+            subtract(DAMAGE_TO_GOLD, l.x, l.y);
+            setAgCarryingGold(ag);
+            return true;
         }
+        else {
+            setAgNotCarryingGold(ag);
+        }
+        logger.warning("Agent " + (ag + 1) + " is trying the pick gold, but there is no gold at " + l.x + "x" + l.y + "!");
         return false;
     }
 
@@ -145,7 +154,7 @@ public class WorldModel extends GridWorldModel {
                 goldsInDepot++;
                 logger.info("Agent " + (ag + 1) + " carried a gold to depot!");
             } else {
-                add(WorldModel.GOLD, l.x, l.y);
+                //add(WorldModel.GOLD, l.x, l.y);
             }
             setAgNotCarryingGold(ag);
             return true;

@@ -215,9 +215,9 @@ calc_new_y(AgY,_,Y) :- Y = AgY+2.
      // broadcast that I got the gold(X,Y), to avoid someone
      // else to pursue this gold
      .broadcast(tell,picked(gold(X,Y)));
-     ?depot(_,DX,DY);
-     !pos(DX,DY);
-     !ensure(drop, 0);
+     //?depot(_,DX,DY);
+     //!pos(DX,DY);
+     //!ensure(drop, 0);
      -gold(X,Y)[source(_)];
      .print("Finish handling ",gold(X,Y));
      !!choose_gold.
@@ -273,11 +273,16 @@ calc_new_y(AgY,_,Y) :- Y = AgY+2.
 
 
 +!ensure(pick,_) : pos(X,Y) & cell(X,Y,gold)
-  <- do(pick); ?carrying_gold.
+  <- do(pick); //?carrying_gold.
+     !ensure(pick,gold(X,Y)).
 // fail if no gold there or not carrying_gold after pick!
 // handle(G) will "catch" this failure.
 
-+!ensure(drop, _) : pos(X,Y) & depot(_,X,Y)
++!ensure(pick,_) : pos(X,Y) & not cell(X,Y,gold)
+  <- .print("ensuring pick no gold now.");
+     !ensure(drop, 0).
+
++!ensure(drop, _) : true //pos(X,Y) & depot(_,X,Y)
   <- do(drop). //TODO: not ?carrying_gold.
 
 

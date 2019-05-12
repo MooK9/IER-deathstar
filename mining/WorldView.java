@@ -163,12 +163,12 @@ public class WorldView extends GridWorldView {
         case WorldModel.DEPOT:
             drawDepot(g, x, y);
             break;
-        case WorldModel.GOLD:
-            drawGold(g, x, y);
-            break;
         case WorldModel.ENEMY:
             drawEnemy(g, x, y);
             break;
+        }
+        if (object <= WorldModel.GOLD && object >= WorldModel.DAMAGE_TO_GOLD) {
+            drawGold(g, x, y, object);
         }
     }
 
@@ -176,13 +176,13 @@ public class WorldView extends GridWorldView {
     public void drawAgent(Graphics g, int x, int y, Color c, int id) {
         Color idColor = Color.black;
         if (((WorldModel)model).isCarryingGold(id)) {
-            super.drawAgent(g, x, y, Color.yellow, -1);
+            //super.drawAgent(g, x, y, Color.yellow, -1);
         } else {
             super.drawAgent(g, x, y, c, -1);
             idColor = Color.white;
+            g.setColor(idColor);
+            drawString(g, x, y, defaultFont, String.valueOf(id+1));
         }
-        g.setColor(idColor);
-        drawString(g, x, y, defaultFont, String.valueOf(id+1));
     }
 
     public void drawDepot(Graphics g, int x, int y) {
@@ -194,7 +194,7 @@ public class WorldView extends GridWorldView {
         g.drawLine(x * cellSizeW + 2, (y + 1) * cellSizeH - 2, (x + 1) * cellSizeW - 2, y * cellSizeH + 2);
     }
 
-    public void drawGold(Graphics g, int x, int y) {
+    public void drawGold(Graphics g, int x, int y, int object) {
         g.setColor(Color.yellow);
         g.drawRect(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
         int[] vx = new int[4];
@@ -208,6 +208,8 @@ public class WorldView extends GridWorldView {
         vx[3] = x * cellSizeW;
         vy[3] = y * cellSizeH + (cellSizeH / 2);
         g.fillPolygon(vx, vy, 4);
+        g.setColor(Color.black);
+        drawString(g,x,y,defaultFont,String.valueOf(object));
     }
 
     public void drawEnemy(Graphics g, int x, int y) {
