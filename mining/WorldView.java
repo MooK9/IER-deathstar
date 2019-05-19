@@ -47,17 +47,17 @@ public class WorldView extends GridWorldView {
     @Override
     public void initComponents(int width) {
         super.initComponents(width);
-        scenarios = new JComboBox();
+       /* scenarios = new JComboBox();
         for (int i=1; i<=4; i++) {
             scenarios.addItem(i);
-        }
+        }*/
         JPanel args = new JPanel();
         args.setLayout(new BoxLayout(args, BoxLayout.Y_AXIS));
 
-        JPanel sp = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        sp.setBorder(BorderFactory.createEtchedBorder());
-        sp.add(new JLabel("Scenario:"));
-        sp.add(scenarios);
+        //JPanel sp = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        //sp.setBorder(BorderFactory.createEtchedBorder());
+     //   sp.add(new JLabel("Scenario:"));
+       // sp.add(scenarios);
 
         jSpeed = new JSlider();
         jSpeed.setMinimum(0);
@@ -77,7 +77,7 @@ public class WorldView extends GridWorldView {
         p.setBorder(BorderFactory.createEtchedBorder());
         p.add(jSpeed);
 
-        args.add(sp);
+       // args.add(sp);
         args.add(p);
 
         JPanel msg = new JPanel();
@@ -111,17 +111,6 @@ public class WorldView extends GridWorldView {
                 }
             }
         });
-
-        scenarios.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent ievt) {
-                int w = ((Integer)scenarios.getSelectedItem()).intValue();
-                if (env != null && env.getSimId() != w) {
-                    env.endSimulation();
-                    env.initWorld(w);
-                }
-            }
-        });
-
         getCanvas().addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
                 int col = e.getX() / cellSizeW;

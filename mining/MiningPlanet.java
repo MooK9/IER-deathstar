@@ -17,8 +17,8 @@ public class MiningPlanet extends jason.environment.Environment {
     WorldModel  model;
     WorldView   view;
 
-    int     simId    = 3; // type of environment
-    int     nbWorlds = 3;
+    int     simId    = 4; // type of environment
+    int     nbWorlds = 4;
 
     int     sleep    = 0;
     boolean running  = true;
@@ -42,7 +42,7 @@ public class MiningPlanet extends jason.environment.Environment {
     public void init(String[] args) {
         hasGUI = args[2].equals("yes");
         sleep  = Integer.parseInt(args[1]);
-        initWorld(Integer.parseInt(args[0]));
+        initWorld(4);
     }
 
     public int getSimId() {
@@ -104,7 +104,7 @@ public class MiningPlanet extends jason.environment.Environment {
     }
 
     public void initWorld(int w) {
-        simId = w;
+        simId = 4;
         try {
             switch (w) {
             case 1:
