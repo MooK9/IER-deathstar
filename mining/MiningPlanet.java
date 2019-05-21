@@ -159,7 +159,12 @@ public class MiningPlanet extends jason.environment.Environment {
         clearPercepts(agName);
         // its location
         Location l = model.getAgPos(ag);
+        Location[] base = model.getBase();
         addPercept(agName, Literal.parseLiteral("pos(" + l.x + "," + l.y + ")"));
+        addPercept(agName, Literal.parseLiteral("base1(" + base[0].x + "," + base[0].y + ")"));
+        addPercept(agName, Literal.parseLiteral("base2(" + base[1].x + "," + base[1].y + ")"));
+        addPercept(agName, Literal.parseLiteral("base3(" + base[2].x + "," + base[2].y + ")"));
+        addPercept(agName, Literal.parseLiteral("base4(" + base[3].x + "," + base[3].y + ")"));
 
         if (model.isCarryingGold(ag)) {
             addPercept(agName, Literal.parseLiteral("carrying_gold"));

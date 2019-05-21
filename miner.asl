@@ -6,17 +6,17 @@ last_dir(null). // the last movement I did
 free.
 
 /* rules */
-
+/*
 // next line is the bottom of the quadrant
 // if 2 lines bellow is too far
 calc_new_y(AgY,QuadY2,QuadY2) :- AgY+2 > QuadY2.
 
 // otherwise, the next line is 2 lines bellow
 calc_new_y(AgY,_,Y) :- Y = AgY+2.
-
+*/
 
 /* plans for sending the initial position to leader */
-
+/*
 +gsize(S,_,_) : true // S is the simulation Id
   <- !send_init_pos(S).
 +!send_init_pos(S) : pos(X,Y)
@@ -24,13 +24,13 @@ calc_new_y(AgY,_,Y) :- Y = AgY+2.
 +!send_init_pos(S) : not pos(_,_) // if I do not know my position yet
   <- .wait("+pos(X,Y)", 500);     // wait for it and try again
      !!send_init_pos(S).
-
+*/
 /* plans for wandering in my quadrant when I'm free */
 
-+free : last_checked(X,Y)     <- !prep_around(X,Y).
-+free : quadrant(X1,Y1,X2,Y2) <- !prep_around(X1,Y1).
-+free : true                  <- !wait_for_quad.
-
++free : base1(X,Y)     <- !prep_pos(X,Y).
+//+free : quadrant(X1,Y1,X2,Y2) <- !prep_around(X1,Y1).
+//+free : true                  <- !wait_for_quad.
+/*
 @pwfq[atomic]
 +!wait_for_quad : free & quadrant(_,_,_,_)
    <- -+free.
@@ -75,9 +75,58 @@ calc_new_y(AgY,_,Y) :- Y = AgY+2.
 +around(X,Y) : quadrant(X1,Y1,X2,Y2)
   <- .print("It should never happen!!!!!! - go home");
      !prep_around(X1,Y1).
-
+*/
+/*
++around(X,Y) : base(bX,bY) & free
+  <- .print("Going to base");
+     !prep_around(bX, bY).
+*/
+/*
++around(X,Y) : base1(b1X,b1Y) & base2(b2X,b2Y) & around(b1X,b1Y)
+   <- !next_step(b2X,b2Y);
+      !prep_around(b2X,b2Y).
++around(X,Y) : base2(b2X,b2Y) & base3(b3X,b3Y) & around(b2X,b2Y)
+   <- !next_step(b3X,b3Y);
+      !!prep_around(b3X,b3Y).
++around(X,Y) : base3(b3X,b3Y) & base4(b4X,b4Y) & around(b3X,b3Y)
+   <- !next_step(b4X,b4Y);
+      !!prep_around(b4X,b4Y).
++around(X,Y) : base4(b4X,b4Y) & base1(b1X,b1Y) & around(b4X,b4Y)
+   <- !next_step(b1X,b1Y);
+      !!prep_around(b1X,b1Y).
+*/
+/*
 +!prep_around(X,Y) : free
-  <- -around(_,_); -last_dir(_); !around(X,Y).
+  <- .print("prepping around ", X, " ", Y);
+     -around(_,_); -last_dir(_); !around(X,Y).
+*/
++!prep_pos(X,Y) : free
+  <- .print("prepping to got to ", X, ", ", Y);
+     //-last_dir(_);
+     !pos(X,Y).
+
++!pos(X,Y) : pos(X,Y) & base1(X,Y) & base2(X2,Y2)
+  <- .print("at base1, going to base2");
+     !pos(X2,Y2).
+
++!pos(X,Y) : pos(X,Y) & base2(X,Y) & base3(X2,Y2)
+  <- .print("at base2, going to base3");
+     !pos(X2,Y2).
+
++!pos(X,Y) : pos(X,Y) & base3(X,Y) & base4(X2,Y2)
+  <- .print("at base3, going to base4");
+     !pos(X2,Y2).
+
++!pos(X,Y) : pos(X,Y) & base4(X,Y) & base1(X2,Y2)
+  <- .print("at base4, going to base1");
+     !pos(X2,Y2).
+
++!pos(X,Y) : not pos(X,Y)
+  <- .print("going to ", X, ", ", Y);
+     !next_step(X,Y);
+     !pos(X,Y).
+
+/*
 
 +!around(X,Y)
    :  // I am around to some location if I am near it or
@@ -89,7 +138,7 @@ calc_new_y(AgY,_,Y) :- Y = AgY+2.
       !!around(X,Y).
 +!around(X,Y) : true
    <- !!around(X,Y).
-
+*/
 +!next_step(X,Y)
    :  pos(AgX,AgY)
    <- jia.get_direction(AgX, AgY, X, Y, D);
@@ -105,7 +154,7 @@ calc_new_y(AgY,_,Y) :- Y = AgY+2.
 
 
 /* Gold-searching Plans */
-
+/*
 // I perceived unknown gold and I am free, handle it
 @pcell[atomic]           // atomic: so as not to handle another
                          // event until handle gold is initialised
@@ -152,12 +201,14 @@ calc_new_y(AgY,_,Y) :- Y = AgY+2.
      pos(X2,Y2) &
      .my_name(Me)
   <- jia.dist(X1,Y1,X2,Y2,D);       // bid
+     .print("Bidding for ",gold(X,Y));
      .send(leader,tell,bid(gold(X1,Y1),D,Me)).
 
 // bid high as I'm not free
 +gold(X1,Y1)[source(A)]
   :  A \== self & .my_name(Me)
-  <- .send(leader,tell,bid(gold(X1,Y1),10000,Me)).
+  <- .print("Bidding for ",gold(X,Y), " with 10000");
+     .send(leader,tell,bid(gold(X1,Y1),10000,Me)).
 
 // gold allocated to me
 @palloc1[atomic]
@@ -258,7 +309,7 @@ calc_new_y(AgY,_,Y) :- Y = AgY+2.
      !calc_gold_distance(R,RD).
 +!calc_gold_distance([_|R],RD)
   <- !calc_gold_distance(R,RD).
-
+*/
 
 // BCG!
 // !pos is used when it is algways possible to go
@@ -266,12 +317,13 @@ calc_new_y(AgY,_,Y) :- Y = AgY+2.
 // .print("It is not possible to go to ",X,"x",Y).
 // in the future
 //+last_dir(skip) <- .drop_goal(pos)
+/*
 +!pos(X,Y) : pos(X,Y) <- .print("I've reached ",X,"x",Y).
 +!pos(X,Y) : not pos(X,Y)
   <- !next_step(X,Y);
      !pos(X,Y).
-
-
+*/
+/*
 +!ensure(pick,_) : pos(X,Y) & cell(X,Y,gold)
   <- do(pick); //?carrying_gold.
      !ensure(pick,gold(X,Y)).
@@ -284,7 +336,7 @@ calc_new_y(AgY,_,Y) :- Y = AgY+2.
 
 +!ensure(drop, _) : true //pos(X,Y) & depot(_,X,Y)
   <- do(drop). //TODO: not ?carrying_gold.
-
+*/
 
 /* end of a simulation */
 

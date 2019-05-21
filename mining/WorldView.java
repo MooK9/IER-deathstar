@@ -36,11 +36,11 @@ public class WorldView extends GridWorldView {
 
     public void setEnv(MiningPlanet env) {
         this.env = env;
-        scenarios.setSelectedIndex(env.getSimId()-1);
+        //scenarios.setSelectedIndex(env.getSimId()-1);
     }
 
     JLabel    jlMouseLoc;
-    JComboBox scenarios;
+    //JComboBox scenarios;
     JSlider   jSpeed;
     JLabel    jGoldsC;
 

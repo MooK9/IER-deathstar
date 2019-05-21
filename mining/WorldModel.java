@@ -21,6 +21,7 @@ public class WorldModel extends GridWorldModel {
     Set<Integer>              agWithGold;  // which agent is carrying gold
     int                       goldsInDepot   = 0;
     int                       initialNbGolds = 0;
+    Location[]                base;
 
     private Logger            logger   = Logger.getLogger("jasonTeamSimLocal.mas2j." + WorldModel.class.getName());
 
@@ -47,6 +48,7 @@ public class WorldModel extends GridWorldModel {
     private WorldModel(int w, int h, int nbAgs) {
         super(w, h, nbAgs);
         agWithGold = new HashSet<Integer>();
+        base = new Location[]{new Location(3, 29), new Location(31, 29), new Location(31, 4), new Location(4, 4)};
     }
 
     public String getId() {
@@ -61,6 +63,14 @@ public class WorldModel extends GridWorldModel {
 
     public Location getDepot() {
         return depot;
+    }
+
+    public Location[] getBase() {
+        return base;
+    }
+
+    public Location getBase(int ag) {
+        return base[ag];
     }
 
     public int getGoldsInDepot() {

@@ -1,7 +1,7 @@
 // leader agent
 
 /* quadrant allocation */
-
+/*
 @quads[atomic]
 +gsize(S,W,H) : true
   <- // calculate the area of each quadrant and remember them
@@ -48,9 +48,9 @@
      jia.dist(X1,Y1,AgX,AgY,Dist);
      !calc_ag_dist(S,Q,RAg,RDist).
 
-
+*/
 /* negotiation for found gold */
-
+/*
 +bid(Gold,D,Ag)
   :  .count(bid(Gold,_,_),3)  // three bids were received
   <- .print("bid from ",Ag," for ",Gold," is ",D);
@@ -68,7 +68,7 @@
      //-Gold[source(_)].
 -!allocate_miner(Gold)
   <- .print("could not allocate gold ",Gold).
-
+*/
 
 /* end of simulation plans */
 
