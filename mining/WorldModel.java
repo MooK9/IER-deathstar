@@ -407,13 +407,17 @@ public class WorldModel extends GridWorldModel {
 	
  /** world with gold and obstacles */
     static WorldModel world4() throws Exception {
-        WorldModel model = WorldModel.create(35, 35, 4);
+        WorldModel model = WorldModel.create(35, 35, 5);
         model.setId("Scenario 6");
         model.setDepot(16, 16);
         model.setAgPos(0, 1, 0);
         model.setAgPos(1, 20, 0);
         model.setAgPos(2, 6, 26);
         model.setAgPos(3, 20, 20);
+		
+		//stormtroope		
+        model.setAgPos(4, 22, 28);
+
         model.add(WorldModel.GOLD, 20, 13);
         model.add(WorldModel.GOLD, 15, 20);
         model.add(WorldModel.GOLD, 1, 1);

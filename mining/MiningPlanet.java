@@ -100,29 +100,15 @@ public class MiningPlanet extends jason.environment.Environment {
     }
 
     private int getAgIdBasedOnName(String agName) {
+		logger.info(""+((Integer.parseInt(agName.substring(5))) - 1));
         return (Integer.parseInt(agName.substring(5))) - 1;
     }
 
     public void initWorld(int w) {
         simId = 4;
         try {
-            switch (w) {
-            case 1:
-                model = WorldModel.world1();
-                break;
-            case 2:
-                model = WorldModel.world2();
-                break;
-            case 3:
-                model = WorldModel.world3();
-                break;
-			case 4:
-                model = WorldModel.world4();
-                break;
-            default:
-                logger.info("Invalid index!");
-                return;
-            }
+            
+			model = WorldModel.world4();
             clearPercepts();
             addPercept(Literal.parseLiteral("gsize(" + simId + "," + model.getWidth() + "," + model.getHeight() + ")"));
             addPercept(Literal.parseLiteral("depot(" + simId + "," + model.getDepot().x + "," + model.getDepot().y + ")"));
