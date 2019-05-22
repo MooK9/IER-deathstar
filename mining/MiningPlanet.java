@@ -7,6 +7,7 @@ import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.environment.grid.Location;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,18 +32,24 @@ public class MiningPlanet extends jason.environment.Environment {
     Term                    right    = Literal.parseLiteral("do(right)");
     Term                    left     = Literal.parseLiteral("do(left)");
     Term                    skip     = Literal.parseLiteral("do(skip)");
-    Term                    pick     = Literal.parseLiteral("do(pick)");
-    Term                    drop     = Literal.parseLiteral("do(drop)");
+    Term                    fight     = Literal.parseLiteral("do(fight)");
+    Term                    destroy     = Literal.parseLiteral("do(destroy)");
+    Term                    extinguish     = Literal.parseLiteral("do(extinguish)");
 
     public enum Move {
         UP, DOWN, RIGHT, LEFT
     };
 
+    String agent1Name = "spaceship";
+    String agent2Name = "stormtrooper";
+
     @Override
     public void init(String[] args) {
-        hasGUI = args[2].equals("yes");
-        sleep  = Integer.parseInt(args[1]);
+        hasGUI = args[1].equals("yes");
+        sleep  = Integer.parseInt(args[0]);
         initWorld(4);
+        model.nbSpaceships = Integer.parseInt(args[2]);
+        model.nbStormtroopers = Integer.parseInt(args[3]);
     }
 
     public int getSimId() {
@@ -68,7 +75,7 @@ public class MiningPlanet extends jason.environment.Environment {
             }
 
             // get the agent id based on its name
-            int agId = getAgIdBasedOnName(ag);
+            int agId = getAgIDFromName(ag);
 
             if (action.equals(up)) {
                 result = model.move(Move.UP, agId);
@@ -80,11 +87,11 @@ public class MiningPlanet extends jason.environment.Environment {
                 result = model.move(Move.LEFT, agId);
             } else if (action.equals(skip)) {
                 result = true;
-            } else if (action.equals(pick)) {
-                result = model.pick(agId);
-            } else if (action.equals(drop)) {
-                result = model.drop(agId);
-                view.udpateCollectedGolds();
+            } else if (action.equals(fight)) {
+                result = model.fight(agId);
+            } else if (action.equals(destroy)) {
+                result = model.destroy(agId);
+                //view.udpateCollectedGolds();
             } else {
                 logger.info("executing: " + action + ", but not implemented!");
             }
@@ -99,23 +106,77 @@ public class MiningPlanet extends jason.environment.Environment {
         return false;
     }
 
-    private int getAgIdBasedOnName(String agName) {
-		logger.info(""+((Integer.parseInt(agName.substring(5))) - 1));
-        return (Integer.parseInt(agName.substring(5))) - 1;
+    public int getAgIDFromName(String agName) {
+        if (agName.equals("radar")) {
+            return 0;
+        }
+        if (agName.equals("firealarm")) {
+            return 1;
+        }
+        if (agName.startsWith(agent1Name)) {
+            if (model.nbSpaceships == 1) {
+                return 2;
+            }
+            else {
+                return (Integer.parseInt(agName.substring(agent1Name.length()))) + 1;
+            }
+        }
+        if (agName.startsWith(agent2Name)) {
+            if (model.nbStormtroopers == 1) {
+                return model.nbSpaceships;
+            }
+            else {
+                return (Integer.parseInt(agName.substring(agent2Name.length()))) + (model.nbSpaceships + 1);
+            }
+        }
+        logger.warning("There is no ID for agent named "+agName);
+        return -1;
+    }
+
+    public String getAgNameFromID(int id) {
+        if (id == 0) {
+            return "radar";
+        }
+        if (id == 1) {
+            return "firealarm";
+        }
+        if (id < model.nbSpaceships + 2) {
+            if (model.nbSpaceships == 1) {
+                return agent1Name;
+            }
+            else {
+                return agent1Name + (id-1);
+            }
+        }
+        else {
+            if (model.nbStormtroopers == 1) {
+                return agent2Name;
+            }
+            else {
+                return agent2Name + (id-(model.nbSpaceships+1));
+            }
+        }
     }
 
     public void initWorld(int w) {
         simId = 4;
         try {
-            
-			model = WorldModel.world4();
+            model = WorldModel.world4();
             clearPercepts();
             addPercept(Literal.parseLiteral("gsize(" + simId + "," + model.getWidth() + "," + model.getHeight() + ")"));
-            addPercept(Literal.parseLiteral("depot(" + simId + "," + model.getDepot().x + "," + model.getDepot().y + ")"));
+            //addPercept(Literal.parseLiteral("depot(" + simId + "," + model.getDepot().x + "," + model.getDepot().y + ")"));
+            List<Location> base = model.getBase();
+            addPercept(Literal.parseLiteral("base1(" + base.get(0).x + "," + base.get(0).y + ")"));
+            addPercept(Literal.parseLiteral("base2(" + base.get(1).x + "," + base.get(1).y + ")"));
+            addPercept(Literal.parseLiteral("base3(" + base.get(2).x + "," + base.get(2).y + ")"));
+            addPercept(Literal.parseLiteral("base4(" + base.get(3).x + "," + base.get(3).y + ")"));
+            addPercept(Literal.parseLiteral("base5(" + base.get(4).x + "," + base.get(4).y + ")"));
+            addPercept(Literal.parseLiteral("base6(" + base.get(5).x + "," + base.get(5).y + ")"));
+
             if (hasGUI) {
                 view = new WorldView(model);
                 view.setEnv(this);
-                view.udpateCollectedGolds();
+                //view.udpateCollectedGolds();
             }
             updateAgsPercept();
             informAgsEnvironmentChanged();
@@ -138,34 +199,52 @@ public class MiningPlanet extends jason.environment.Environment {
     }
 
     private void updateAgPercept(int ag) {
-        updateAgPercept("miner" + (ag + 1), ag);
+        updateAgPercept(getAgNameFromID(ag), ag);
     }
 
     private void updateAgPercept(String agName, int ag) {
         clearPercepts(agName);
         // its location
         Location l = model.getAgPos(ag);
-        Location[] base = model.getBase();
         addPercept(agName, Literal.parseLiteral("pos(" + l.x + "," + l.y + ")"));
-        addPercept(agName, Literal.parseLiteral("base1(" + base[0].x + "," + base[0].y + ")"));
-        addPercept(agName, Literal.parseLiteral("base2(" + base[1].x + "," + base[1].y + ")"));
-        addPercept(agName, Literal.parseLiteral("base3(" + base[2].x + "," + base[2].y + ")"));
-        addPercept(agName, Literal.parseLiteral("base4(" + base[3].x + "," + base[3].y + ")"));
 
-        if (model.isCarryingGold(ag)) {
+        if (model.isFigthing(ag)) {
             addPercept(agName, Literal.parseLiteral("carrying_gold"));
         }
 
-        // what's around
-        updateAgPercept(agName, l.x - 1, l.y - 1);
-        updateAgPercept(agName, l.x - 1, l.y);
-        updateAgPercept(agName, l.x - 1, l.y + 1);
-        updateAgPercept(agName, l.x, l.y - 1);
-        updateAgPercept(agName, l.x, l.y);
-        updateAgPercept(agName, l.x, l.y + 1);
-        updateAgPercept(agName, l.x + 1, l.y - 1);
-        updateAgPercept(agName, l.x + 1, l.y);
-        updateAgPercept(agName, l.x + 1, l.y + 1);
+        if (agName.equals("radar")) {
+            for (int i = 0; i < model.getWidth(); i++) {
+                for (int j = 0; j < model.getWidth(); j++) {
+                    updateRadarPercept(agName, i, j);
+                }
+            }
+        }
+        else if (agName.equals("firealarm")) {
+            for (int i = 0; i < model.getWidth(); i++) {
+                for (int j = 0; j < model.getWidth(); j++) {
+                    updateFirealarmPercept(agName, i, j);
+                }
+            }
+        }
+        else {
+            // what's around
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    updateAgPercept(agName, l.x + i, l.y + j);
+                }
+            }
+            /*
+            updateAgPercept(agName, l.x - 1, l.y - 1);
+            updateAgPercept(agName, l.x - 1, l.y);
+            updateAgPercept(agName, l.x - 1, l.y + 1);
+            updateAgPercept(agName, l.x, l.y - 1);
+            updateAgPercept(agName, l.x, l.y);
+            updateAgPercept(agName, l.x, l.y + 1);
+            updateAgPercept(agName, l.x + 1, l.y - 1);
+            updateAgPercept(agName, l.x + 1, l.y);
+            updateAgPercept(agName, l.x + 1, l.y + 1);
+            */
+        }
     }
 
 
@@ -174,15 +253,29 @@ public class MiningPlanet extends jason.environment.Environment {
         if (model.hasObject(WorldModel.OBSTACLE, x, y)) {
             addPercept(agName, Literal.parseLiteral("cell(" + x + "," + y + ",obstacle)"));
         } else {
-            if (model.hasObject(WorldModel.GOLD, x, y)) {
-                addPercept(agName, Literal.parseLiteral("cell(" + x + "," + y + ",gold)"));
-            }
             if (model.hasObject(WorldModel.ENEMY, x, y)) {
                 addPercept(agName, Literal.parseLiteral("cell(" + x + "," + y + ",enemy)"));
+            }
+            if (model.hasObject(WorldModel.FIRE, x, y)) {
+                addPercept(agName, Literal.parseLiteral("cell(" + x + "," + y + ",fire)"));
             }
             if (model.hasObject(WorldModel.AGENT, x, y)) {
                 addPercept(agName, Literal.parseLiteral("cell(" + x + "," + y + ",ally)"));
             }
+        }
+    }
+
+    private void updateRadarPercept(String agName, int x, int y) {
+        if (model == null || !model.inGrid(x,y)) return;
+        if (model.hasObject(WorldModel.ENEMY, x, y)) {
+            addPercept(agName, Literal.parseLiteral("cell(" + x + "," + y + ",enemy)"));
+        }
+    }
+
+    private void updateFirealarmPercept(String agName, int x, int y) {
+        if (model == null || !model.inGrid(x,y)) return;
+        if (model.hasObject(WorldModel.FIRE, x, y)) {
+            addPercept(agName, Literal.parseLiteral("cell(" + x + "," + y + ",fire)"));
         }
     }
 

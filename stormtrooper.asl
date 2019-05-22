@@ -1,8 +1,8 @@
 //Alaphelyzet egyhelyben marad
-//Kap jelet hogy gond van el kezd keresgélni
-//ha tüzet talál, eloltja
+//Kap jelet hogy gond van el kezd keresgÃ©lni
+//ha tÃ¼zet talÃ¡l, eloltja
 // jelez hogy el van oltva a t?z
-//vissza megy a kezd? helyére vagy marad ahol van
+//vissza megy a kezd? helyÃ©re vagy marad ahol van
 
 
 start.
@@ -11,8 +11,10 @@ start.
 at(P) :- pos(P,X,Y) & pos(r1,X,Y).
 
 +!at(T) : at(T).
-+tuz(source(radar)): true <- ?pos(T,X,Y);
++tuz(source(firealarm)): true <- ?pos(T,X,Y);
            move_towards(X,Y);
            !at(T).
 		   
-+elolt(T): true <- .send(radar,tell,eloltva).
++elolt(T): true <- .send(firealarm,tell,eloltva).
+
+

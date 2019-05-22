@@ -1,4 +1,4 @@
-// miner agent
+// spaceship agent
 
 /* beliefs */
 

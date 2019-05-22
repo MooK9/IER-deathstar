@@ -117,10 +117,16 @@ public class WorldView extends GridWorldView {
                 int lin = e.getY() / cellSizeH;
                 if (col >= 0 && lin >= 0 && col < getModel().getWidth() && lin < getModel().getHeight()) {
                     WorldModel wm = (WorldModel)model;
-                    wm.add(WorldModel.GOLD, col, lin);
-                    wm.setInitialNbGolds(wm.getInitialNbGolds()+1);
+                    if (lin < 25) {
+                        wm.add(WorldModel.ENEMY, col, lin);
+                    }
+                    else {
+                        wm.add(WorldModel.FIRE, col, lin);
+                    }
+                    
+                   // wm.setInitialNbGolds(wm.getInitialNbGolds()+1);
                     update(col, lin);
-                    udpateCollectedGolds();
+                    //udpateCollectedGolds();
                 }
             }
             public void mouseExited(MouseEvent e) {}
@@ -140,31 +146,29 @@ public class WorldView extends GridWorldView {
             }
         });
     }
-
+/*
     public void udpateCollectedGolds() {
         WorldModel wm = (WorldModel)model;
         jGoldsC.setText(wm.getGoldsInDepot() + "/" + wm.getInitialNbGolds());
     }
-
+*/
     @Override
     public void draw(Graphics g, int x, int y, int object) {
-        switch (object) {
-        case WorldModel.DEPOT:
-            drawDepot(g, x, y);
-            break;
-        case WorldModel.ENEMY:
-            drawEnemy(g, x, y);
-            break;
+        if (object <= WorldModel.ENEMY && object >= WorldModel.DAMAGE_TO_ENEMY) {
+            drawEnemy(g, x, y, object);
         }
-        if (object <= WorldModel.GOLD && object >= WorldModel.DAMAGE_TO_GOLD) {
-            drawGold(g, x, y, object);
+        if (object <= WorldModel.FIRE && object >= WorldModel.DAMAGE_TO_FIRE) {
+            drawFire(g, x, y, object);
         }
     }
 
     @Override
     public void drawAgent(Graphics g, int x, int y, Color c, int id) {
         Color idColor = Color.black;
-        if (((WorldModel)model).isCarryingGold(id)) {
+        if (id < 2 ) {
+            return;
+        }
+        if (((WorldModel)model).isFigthing(id)) {
             //super.drawAgent(g, x, y, Color.yellow, -1);
         } else {
             super.drawAgent(g, x, y, c, -1);
@@ -183,7 +187,7 @@ public class WorldView extends GridWorldView {
         g.drawLine(x * cellSizeW + 2, (y + 1) * cellSizeH - 2, (x + 1) * cellSizeW - 2, y * cellSizeH + 2);
     }
 
-    public void drawGold(Graphics g, int x, int y, int object) {
+    public void drawEnemy(Graphics g, int x, int y, int object) {
         g.setColor(Color.yellow);
         g.drawRect(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
         int[] vx = new int[4];
@@ -198,7 +202,25 @@ public class WorldView extends GridWorldView {
         vy[3] = y * cellSizeH + (cellSizeH / 2);
         g.fillPolygon(vx, vy, 4);
         g.setColor(Color.black);
-        drawString(g,x,y,defaultFont,String.valueOf(object));
+        drawString(g,x,y,defaultFont,String.valueOf(object / WorldModel.DAMAGE_TO_ENEMY));
+    }
+
+    public void drawFire(Graphics g, int x, int y, int object) {
+        g.setColor(Color.red);
+        g.drawRect(x * cellSizeW + 2, y * cellSizeH + 2, cellSizeW - 4, cellSizeH - 4);
+        int[] vx = new int[4];
+        int[] vy = new int[4];
+        vx[0] = x * cellSizeW + (cellSizeW / 2);
+        vy[0] = y * cellSizeH;
+        vx[1] = (x + 1) * cellSizeW;
+        vy[1] = y * cellSizeH + (cellSizeH / 2);
+        vx[2] = x * cellSizeW + (cellSizeW / 2);
+        vy[2] = (y + 1) * cellSizeH;
+        vx[3] = x * cellSizeW;
+        vy[3] = y * cellSizeH + (cellSizeH / 2);
+        g.fillPolygon(vx, vy, 4);
+        g.setColor(Color.black);
+        drawString(g,x,y,defaultFont,String.valueOf(object / WorldModel.DAMAGE_TO_FIRE));
     }
 
     public void drawEnemy(Graphics g, int x, int y) {
