@@ -30,7 +30,7 @@ public class WorldView extends GridWorldView {
  private Logger logger = Logger.getLogger("jasonTeamSimLocal.mas2j." + WorldView.class.getName());
 	
     MiningPlanet env = null;
-    boolean SirenState=true;
+    int SirenState=1;
 
     public WorldView(WorldModel model) {
         super(model, "Mining World", 600);
@@ -165,7 +165,7 @@ public class WorldView extends GridWorldView {
             drawFire(g, x, y, object);
         }
 //TODO random változik kétszer és kurva gyorsan
-     //   drawSiren(g,24,26);
+        drawSiren(g,24,26);
     }
 
     @Override
@@ -181,6 +181,7 @@ public class WorldView extends GridWorldView {
             idColor = Color.white;
             g.setColor(idColor);
             drawString(g, x, y, defaultFont, String.valueOf(id+1));
+			
         }
     }
 
@@ -237,23 +238,24 @@ public class WorldView extends GridWorldView {
     }
 
     public void drawSiren(Graphics g, int x, int y) {
-       
-		if (SirenState) {
+		
+		if ((1000000%SirenState)==0) {
 			logger.info("Siren state changed");
         g.setColor(Color.blue);    
         g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
         g.setColor(Color.red);
         g.fillRect((x+1) * cellSizeW, (y) * cellSizeH, cellSizeW, cellSizeH);
-		SirenState=false;
+		SirenState=1;
+		
         }
         else{
         g.setColor(Color.red);
         g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
         g.setColor(Color.blue); 
         g.fillRect((x+1) * cellSizeW, (y) * cellSizeH, cellSizeW, cellSizeH);
-		SirenState=true;
+		SirenState++;
         }
-		
         
+		
     }
 }
