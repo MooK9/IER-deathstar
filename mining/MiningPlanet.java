@@ -211,7 +211,7 @@ public class MiningPlanet extends jason.environment.Environment {
         addPercept(agName, Literal.parseLiteral("pos(" + l.x + "," + l.y + ")"));
 
         if (model.isFigthing(ag)) {
-            addPercept(agName, Literal.parseLiteral("carrying_gold"));
+            addPercept(agName, Literal.parseLiteral("fighting"));
         }
 
         if (agName.equals("radar")) {
