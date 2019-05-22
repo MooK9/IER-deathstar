@@ -95,6 +95,8 @@ public class MiningPlanet extends jason.environment.Environment {
             } else {
                 logger.info("executing: " + action + ", but not implemented!");
             }
+
+            
             if (result) {
                 updateAgPercept(agId);
                 return true;

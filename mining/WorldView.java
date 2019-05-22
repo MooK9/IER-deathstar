@@ -22,11 +22,15 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class WorldView extends GridWorldView {
-
+ private Logger logger = Logger.getLogger("jasonTeamSimLocal.mas2j." + WorldView.class.getName());
+	
     MiningPlanet env = null;
+    boolean SirenState=true;
 
     public WorldView(WorldModel model) {
         super(model, "Mining World", 600);
@@ -160,6 +164,8 @@ public class WorldView extends GridWorldView {
         if (object <= WorldModel.FIRE && object >= WorldModel.DAMAGE_TO_FIRE) {
             drawFire(g, x, y, object);
         }
+//TODO random változik kétszer és kurva gyorsan
+     //   drawSiren(g,24,26);
     }
 
     @Override
@@ -222,14 +228,32 @@ public class WorldView extends GridWorldView {
         g.setColor(Color.black);
         drawString(g,x,y,defaultFont,String.valueOf(object / WorldModel.DAMAGE_TO_FIRE));
     }
+	
+	
 
     public void drawEnemy(Graphics g, int x, int y) {
         g.setColor(Color.red);
         g.fillOval(x * cellSizeW + 7, y * cellSizeH + 7, cellSizeW - 8, cellSizeH - 8);
     }
 
-    public static void main(String[] args) throws Exception {
-        MiningPlanet env = new MiningPlanet();
-        env.init(new String[] {"5","50","yes"});
+    public void drawSiren(Graphics g, int x, int y) {
+       
+		if (SirenState) {
+			logger.info("Siren state changed");
+        g.setColor(Color.blue);    
+        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+        g.setColor(Color.red);
+        g.fillRect((x+1) * cellSizeW, (y) * cellSizeH, cellSizeW, cellSizeH);
+		SirenState=false;
+        }
+        else{
+        g.setColor(Color.red);
+        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
+        g.setColor(Color.blue); 
+        g.fillRect((x+1) * cellSizeW, (y) * cellSizeH, cellSizeW, cellSizeH);
+		SirenState=true;
+        }
+		
+        
     }
 }
