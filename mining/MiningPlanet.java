@@ -95,6 +95,8 @@ public class MiningPlanet extends jason.environment.Environment {
             } else if (action.equals(destroy)) {
                 result = model.destroy(agId);
                 //view.udpateCollectedGolds();
+            } else if (action.equals(extinguish)) {
+                result = model.extinguish(agId);
             } else if (action.equals(siren_on)) {
                 result = model.siren_on(agId);
             } else if (action.equals(siren_off)) {
@@ -136,7 +138,7 @@ public class MiningPlanet extends jason.environment.Environment {
         }
         if (agName.startsWith(agent2Name)) {
             if (model.nbStormtroopers == 1) {
-                return model.nbSpaceships;
+                return model.nbSpaceships + 2;
             }
             else {
                 return (Integer.parseInt(agName.substring(agent2Name.length()))) + (model.nbSpaceships + 1);

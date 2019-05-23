@@ -7,20 +7,18 @@
 @pfire[atomic]
 +cell(X,Y,fire)
   <- do(siren_on);
-     !change(color);
-     .print("Fire at ", X, ", ", Y);
-     .send(stormtrooper,tell,fire(X,Y)).
+     .send(stormtrooper,tell,fire(X,Y));
+     !!change(color);
+     .print("Fire at ", X, ", ", Y);.
 
-/*
 +extinguished(X,Y)
   <- -cell(X,Y,fire);.
-*/
 
 +!change(color)
   :  cell(_,_,fire)
   <- .print("alarm changing color");
      do(change);
-     .wait(500);
+     .wait(1000);
      !change(color).
 
 @poff[atomic]

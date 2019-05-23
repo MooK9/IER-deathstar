@@ -182,13 +182,8 @@ public class WorldModel extends GridWorldModel {
 
     boolean extinguish(int ag) {
         Location l = getAgPos(ag);
-        if (isFigthing(ag)) {
-            logger.info("Agent " + (ag + 1) + " extingushed a fire!");
-            //add(WorldModel.RESOURCE, l.x, l.y);
-            setAgNotFighting(ag);
-            return true;
-        }
-        return false;
+        remove(FIRE, l.x, l.y);
+        return true;
     }
 
     boolean siren_on(int ag) {
@@ -221,14 +216,13 @@ public class WorldModel extends GridWorldModel {
             add(SIREN_RED, l2.x, l2.y);
             return true;
         }
-        if (hasObject(SIREN_BLUE, l1.x, l1.y)) {
+        else {
             remove(SIREN_BLUE, l1.x, l1.y);
             add(SIREN_RED, l1.x, l1.y);
             remove(SIREN_RED, l2.x, l2.y);
             add(SIREN_BLUE, l2.x, l2.y);
             return true;
         }
-        return false;
     }
 
     /*
@@ -317,7 +311,7 @@ public class WorldModel extends GridWorldModel {
         model.add(WorldModel.FIRE, 3, 34);
         model.add(WorldModel.FIRE, 23, 26);
         model.add(WorldModel.FIRE, 31, 32);
-       
+        
 
         model.add(WorldModel.OBSTACLE, 1, 34);
 		model.add(WorldModel.OBSTACLE, 1, 33);
