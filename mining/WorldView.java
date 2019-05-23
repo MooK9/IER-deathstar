@@ -33,7 +33,7 @@ public class WorldView extends GridWorldView {
     int SirenState=1;
 
     public WorldView(WorldModel model) {
-        super(model, "Mining World", 600);
+        super(model, "DeathStar", 600);
         setVisible(true);
         repaint();
     }
@@ -89,18 +89,18 @@ public class WorldView extends GridWorldView {
         msg.setBorder(BorderFactory.createEtchedBorder());
 
         p = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        p.add(new JLabel("Click on the cells to add new pieces of gold."));
+        p.add(new JLabel("Click on the cells to add a new enemy or fire"));
         msg.add(p);
         p = new JPanel(new FlowLayout(FlowLayout.CENTER));
         p.add(new JLabel("(mouse at:"));
         jlMouseLoc = new JLabel("0,0)");
         p.add(jlMouseLoc);
         msg.add(p);
-        p = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        p.add(new JLabel("Collected golds:"));
-        jGoldsC = new JLabel("0");
-        p.add(jGoldsC);
-        msg.add(p);
+        //p = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        //p.add(new JLabel("Collected golds:"));
+        //jGoldsC = new JLabel("0");
+        //p.add(jGoldsC);
+        //msg.add(p);
 
         JPanel s = new JPanel(new BorderLayout());
         s.add(BorderLayout.WEST, args);
