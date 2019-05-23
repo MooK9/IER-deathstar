@@ -22,7 +22,9 @@ public class WorldModel extends GridWorldModel {
     
 
     Set<Integer>              agFighting;  // which agent is fighting
-    List<Location>                base;
+    List<Location>            base;
+    Set<Location>             inside;
+    Set<Location>             outside;
 
     private Logger            logger   = Logger.getLogger("jasonTeamSimLocal.mas2j." + WorldModel.class.getName());
 
@@ -53,6 +55,8 @@ public class WorldModel extends GridWorldModel {
         super(w, h, nbAgs);
         agFighting = new HashSet<Integer>();
         base = new ArrayList<Location>();
+        inside = new HashSet<Location>();
+        outside = new HashSet<Location>();
     }
 
     public String getId() {
@@ -95,6 +99,22 @@ public class WorldModel extends GridWorldModel {
     public void subtract(int value, int x, int y) {
         data[x][y] -= value;
         if (view != null) view.update(x,y);
+    }
+
+    public void addInside(int x, int y) {
+        inside.add(new Location(x, y));
+    }
+
+    public void addOutside(int x, int y) {
+        outside.add(new Location(x, y));
+    }
+
+    public boolean isInside(int x, int y) {
+        return inside.contains(new Location(x, y));
+    }
+
+    public boolean isOutside(int x, int y) {
+        return outside.contains(new Location(x, y));
     }
 
     /** Actions **/
@@ -299,7 +319,81 @@ public class WorldModel extends GridWorldModel {
 		model.add(WorldModel.OBSTACLE, 30, 30);
 		
 		//dot
-		model.add(WorldModel.OBSTACLE, 27, 30);
+        model.add(WorldModel.OBSTACLE, 27, 30);
+        
+        //outside
+        for (int i = 0; i < 35; i++) {
+            for (int j = 0; j < 24; j++) {
+                model.addOutside(i, j);
+            }
+        }
+        for (int i = 0; i < 10; i++) {
+            model.addOutside(i, 24);
+            model.addOutside(34 - i, 24);
+        }
+        for (int i = 0; i < 9; i++) {
+            model.addOutside(i, 25);
+            model.addOutside(34 - i, 25);
+        }
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 4; j++) {
+                model.addOutside(i - j, 26 + j);
+                model.addOutside(34 - i + j, 26 + j);
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 2; j++) {
+                model.addOutside(i, 30 + j);
+                model.addOutside(34 - i, 30 + j);
+            }
+        }
+        for (int i = 0; i < 2; i++) {
+            model.addOutside(i, 32);
+            model.addOutside(34 - i, 32);
+        }
+        for (int i = 0; i < 2; i++) {
+            model.addOutside(0, 33 + i);
+            model.addOutside(34, 33 + i);
+        }
+
+        //inside
+        for (int i = 10; i <= 24; i++) {
+            model.addInside(i, 25);
+        }
+        for (int i = 9; i <= 25; i++) {
+            model.addInside(i, 26);
+        }
+        for (int i = 7; i <= 25; i++) {
+            model.addInside(i, 27);
+        }
+        for (int i = 6; i <= 24; i++) {
+            model.addInside(i, 28);
+        }
+        for (int i = 5; i <= 23; i++) {
+            model.addInside(i, 29);
+        }
+        for (int i = 4; i <= 23; i++) {
+            model.addInside(i, 30);
+        }
+        for (int i = 4; i <= 23; i++) {
+            model.addInside(i, 31);
+        }
+        for (int i = 3; i <= 24; i++) {
+            model.addInside(i, 32);
+        }
+        for (int i = 30; i <= 31; i++) {
+            model.addInside(i, 32);
+        }
+        for (int i = 2; i <= 25; i++) {
+            model.addInside(i, 33);
+        }
+        for (int i = 29; i <= 32; i++) {
+            model.addInside(i, 33);
+        }
+        for (int i = 2; i <= 32; i++) {
+            model.addInside(i, 34);
+        }
+
 		
         return model;
     }	

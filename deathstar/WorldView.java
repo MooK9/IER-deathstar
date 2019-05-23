@@ -103,10 +103,10 @@ public class WorldView extends GridWorldView {
                 int lin = e.getY() / cellSizeH;
                 if (col >= 0 && lin >= 0 && col < getModel().getWidth() && lin < getModel().getHeight()) {
                     WorldModel wm = (WorldModel)model;
-                    if (lin < 25) {
+                    if (wm.isOutside(col, lin)) {
                         wm.add(WorldModel.ENEMY, col, lin);
                     }
-                    else {
+                    else if (wm.isInside(col, lin)) {
                         wm.add(WorldModel.FIRE, col, lin);
                     }
                     update(col, lin);
