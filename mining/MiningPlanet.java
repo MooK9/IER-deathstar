@@ -35,6 +35,9 @@ public class MiningPlanet extends jason.environment.Environment {
     Term                    fight     = Literal.parseLiteral("do(fight)");
     Term                    destroy     = Literal.parseLiteral("do(destroy)");
     Term                    extinguish     = Literal.parseLiteral("do(extinguish)");
+    Term                    change     = Literal.parseLiteral("do(change)");
+    Term                    siren_on     = Literal.parseLiteral("do(siren_on)");
+    Term                    siren_off     = Literal.parseLiteral("do(siren_off)");
 
     public enum Move {
         UP, DOWN, RIGHT, LEFT
@@ -92,14 +95,18 @@ public class MiningPlanet extends jason.environment.Environment {
             } else if (action.equals(destroy)) {
                 result = model.destroy(agId);
                 //view.udpateCollectedGolds();
+            } else if (action.equals(siren_on)) {
+                result = model.siren_on(agId);
+            } else if (action.equals(siren_off)) {
+                result = model.siren_off(agId);
+            } else if (action.equals(change)) {
+                result = model.change_color(agId);
             } else {
                 logger.info("executing: " + action + ", but not implemented!");
             }
 			       
 			
-			   
-			view.update(24,26);
-			view.update(25,26);
+			
             
             if (result) {
                 updateAgPercept(agId);

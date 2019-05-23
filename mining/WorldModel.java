@@ -15,9 +15,10 @@ public class WorldModel extends GridWorldModel {
 
     public static final int   DAMAGE_TO_ENEMY  = 16;
     public static final int   ENEMY  = 240;
-    //public static final int   DEPOT = 4096;
     public static final int   DAMAGE_TO_FIRE = 256;
     public static final int   FIRE = 3840;
+    public static final int   SIREN_RED = 4096;
+    public static final int   SIREN_BLUE = 8192;
     
 
     //Location                  depot;
@@ -185,6 +186,46 @@ public class WorldModel extends GridWorldModel {
             logger.info("Agent " + (ag + 1) + " extingushed a fire!");
             //add(WorldModel.RESOURCE, l.x, l.y);
             setAgNotFighting(ag);
+            return true;
+        }
+        return false;
+    }
+
+    boolean siren_on(int ag) {
+        Location l1 = new Location(24, 26);
+        Location l2 = new Location(25, 26);
+        remove(SIREN_RED, l1.x, l1.y);
+        add(SIREN_BLUE, l1.x, l1.y);
+        remove(SIREN_BLUE, l2.x, l2.y);
+        add(SIREN_RED, l2.x, l2.y);
+        return true;
+    }
+
+    boolean siren_off(int ag) {
+        Location l1 = new Location(24, 26);
+        Location l2 = new Location(25, 26);
+        remove(SIREN_RED, l1.x, l1.y);
+        remove(SIREN_BLUE, l1.x, l1.y);
+        remove(SIREN_RED, l2.x, l2.y);
+        remove(SIREN_BLUE, l2.x, l2.y);
+        return true;
+    }
+
+    boolean change_color(int ag) {
+        Location l1 = new Location(24, 26);
+        Location l2 = new Location(25, 26);
+        if (hasObject(SIREN_RED, l1.x, l1.y)) {
+            remove(SIREN_RED, l1.x, l1.y);
+            add(SIREN_BLUE, l1.x, l1.y);
+            remove(SIREN_BLUE, l2.x, l2.y);
+            add(SIREN_RED, l2.x, l2.y);
+            return true;
+        }
+        if (hasObject(SIREN_BLUE, l1.x, l1.y)) {
+            remove(SIREN_BLUE, l1.x, l1.y);
+            add(SIREN_RED, l1.x, l1.y);
+            remove(SIREN_RED, l2.x, l2.y);
+            add(SIREN_BLUE, l2.x, l2.y);
             return true;
         }
         return false;

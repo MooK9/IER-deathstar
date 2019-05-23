@@ -1,20 +1,27 @@
 // Agent firealarm in project jasonTeam.mas2j
 
 
-!start.
-!alarm(fire).
-!change(color).
+//!start.
+//!change(color).
 
 /* Plans */
-+cell(x,y,fire)
-<- !change(color);
-.print("Fire at ", X, ", ", Y);	
-     .send(stormtrooper,tell,fire(X,Y));.
+@pcell1[atomic]
++cell(X,Y,fire)
+  <- do(siren_on);
+     !change(color);
+     .print("Fire at ", X, ", ", Y);
+     .send(stormtrooper,tell,fire(X,Y)).
+
+@pcell2[atomic]
+-cell(X,Y,fire)
+  :  not cell(_,_,fire)
+  <- do(siren_off);
+     .print("No more fire!");.
 
 +!change(color)
-  <- do(change);
+  <- .print("alarm changing color");
+     do(change);
      .wait(500);
-     !!change(color).
-
+     !change(color).
 
 

@@ -164,8 +164,9 @@ public class WorldView extends GridWorldView {
         if (object <= WorldModel.FIRE && object >= WorldModel.DAMAGE_TO_FIRE) {
             drawFire(g, x, y, object);
         }
-//TODO random változik kétszer és kurva gyorsan
-        drawSiren(g,24,26);
+        if (object == WorldModel.SIREN_RED || object == WorldModel.SIREN_BLUE) {
+            drawSiren(g, x, y, object);
+        }
     }
 
     @Override
@@ -237,25 +238,13 @@ public class WorldView extends GridWorldView {
         g.fillOval(x * cellSizeW + 7, y * cellSizeH + 7, cellSizeW - 8, cellSizeH - 8);
     }
 
-    public void drawSiren(Graphics g, int x, int y) {
-		
-		if ((1000000%SirenState)==0) {
-			logger.info("Siren state changed");
-        g.setColor(Color.blue);    
-        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-        g.setColor(Color.red);
-        g.fillRect((x+1) * cellSizeW, (y) * cellSizeH, cellSizeW, cellSizeH);
-		SirenState=1;
-		
+    public void drawSiren(Graphics g, int x, int y, int object) {
+        if (object == WorldModel.SIREN_RED) {
+            g.setColor(Color.red);
         }
-        else{
-        g.setColor(Color.red);
-        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
-        g.setColor(Color.blue); 
-        g.fillRect((x+1) * cellSizeW, (y) * cellSizeH, cellSizeW, cellSizeH);
-		SirenState++;
+        else {
+            g.setColor(Color.blue);
         }
-        
-		
+        g.fillRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
     }
 }
