@@ -26,14 +26,13 @@ free.
 
 +!pos(X,Y) : pos(X,Y) <- .print("I've reached ",X,"x",Y).
 +!pos(X,Y) : not pos(X,Y)
-  <- .print("going to ", X, ", ", Y);
+  <- //.print("going to ", X, ", ", Y);
      !next_step(X,Y);
      !pos(X,Y).
 
 +!next_step(X,Y)
    :  pos(AgX,AgY)
    <- jia.get_direction(AgX, AgY, X, Y, D);
-      //.print("from ",AgX,"x",AgY," to ", X,"x",Y," -> ",D);
       do(D).
 +!next_step(X,Y) : not pos(_,_) // I still do not know my position
    <- !next_step(X,Y).
@@ -171,11 +170,9 @@ free.
 
 +end_of_simulation(S,_) : true
   <- .drop_all_desires;
-     .abolish(quadrant(_,_,_,_));
      .abolish(enemy(_,_));
      .abolish(committed_to(_));
      .abolish(destroyed(_));
-     //.abolish(last_checked(_,_));
      -+free;
      .print("-- END ",S," --").
 

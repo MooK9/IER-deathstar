@@ -1,9 +1,4 @@
-//Alaphelyzet egyhelyben marad
-//Kap jelet hogy gond van el kezd keresgélni
-//ha tüzet talál, eloltja
-// jelez hogy el van oltva a t?z
-//vissza megy a kezd? helyére vagy marad ahol van
-
+// Agent stormtrooper in project jasonTeam.mas2j
 
 
 @pfire[atomic]

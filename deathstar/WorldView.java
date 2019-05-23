@@ -1,4 +1,4 @@
-package mining;
+package deathstar;
 
 import jason.environment.grid.GridWorldView;
 
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public class WorldView extends GridWorldView {
  private Logger logger = Logger.getLogger("jasonTeamSimLocal.mas2j." + WorldView.class.getName());
 	
-    MiningPlanet env = null;
+ DeathStar env = null;
     int SirenState=1;
 
     public WorldView(WorldModel model) {
@@ -38,30 +38,18 @@ public class WorldView extends GridWorldView {
         repaint();
     }
 
-    public void setEnv(MiningPlanet env) {
+    public void setEnv(DeathStar env) {
         this.env = env;
-        //scenarios.setSelectedIndex(env.getSimId()-1);
     }
 
     JLabel    jlMouseLoc;
-    //JComboBox scenarios;
     JSlider   jSpeed;
-    JLabel    jGoldsC;
 
     @Override
     public void initComponents(int width) {
         super.initComponents(width);
-       /* scenarios = new JComboBox();
-        for (int i=1; i<=4; i++) {
-            scenarios.addItem(i);
-        }*/
         JPanel args = new JPanel();
         args.setLayout(new BoxLayout(args, BoxLayout.Y_AXIS));
-
-        //JPanel sp = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        //sp.setBorder(BorderFactory.createEtchedBorder());
-     //   sp.add(new JLabel("Scenario:"));
-       // sp.add(scenarios);
 
         jSpeed = new JSlider();
         jSpeed.setMinimum(0);
@@ -81,7 +69,6 @@ public class WorldView extends GridWorldView {
         p.setBorder(BorderFactory.createEtchedBorder());
         p.add(jSpeed);
 
-       // args.add(sp);
         args.add(p);
 
         JPanel msg = new JPanel();
@@ -96,11 +83,6 @@ public class WorldView extends GridWorldView {
         jlMouseLoc = new JLabel("0,0)");
         p.add(jlMouseLoc);
         msg.add(p);
-        //p = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        //p.add(new JLabel("Collected golds:"));
-        //jGoldsC = new JLabel("0");
-        //p.add(jGoldsC);
-        //msg.add(p);
 
         JPanel s = new JPanel(new BorderLayout());
         s.add(BorderLayout.WEST, args);
@@ -127,10 +109,7 @@ public class WorldView extends GridWorldView {
                     else {
                         wm.add(WorldModel.FIRE, col, lin);
                     }
-                    
-                   // wm.setInitialNbGolds(wm.getInitialNbGolds()+1);
                     update(col, lin);
-                    //udpateCollectedGolds();
                 }
             }
             public void mouseExited(MouseEvent e) {}
@@ -150,12 +129,7 @@ public class WorldView extends GridWorldView {
             }
         });
     }
-/*
-    public void udpateCollectedGolds() {
-        WorldModel wm = (WorldModel)model;
-        jGoldsC.setText(wm.getGoldsInDepot() + "/" + wm.getInitialNbGolds());
-    }
-*/
+
     @Override
     public void draw(Graphics g, int x, int y, int object) {
         if (object <= WorldModel.ENEMY && object >= WorldModel.DAMAGE_TO_ENEMY) {
@@ -176,7 +150,6 @@ public class WorldView extends GridWorldView {
             return;
         }
         if (((WorldModel)model).isFigthing(id)) {
-            //super.drawAgent(g, x, y, Color.yellow, -1);
         } else {
             super.drawAgent(g, x, y, c, -1);
             idColor = Color.white;
@@ -231,8 +204,6 @@ public class WorldView extends GridWorldView {
         drawString(g,x,y,defaultFont,String.valueOf(object / WorldModel.DAMAGE_TO_FIRE));
     }
 	
-	
-
     public void drawEnemy(Graphics g, int x, int y) {
         g.setColor(Color.red);
         g.fillOval(x * cellSizeW + 7, y * cellSizeH + 7, cellSizeW - 8, cellSizeH - 8);

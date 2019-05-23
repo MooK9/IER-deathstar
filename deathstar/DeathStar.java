@@ -1,4 +1,4 @@
-package mining;
+package deathstar;
 
 // Environment code for project jasonTeamSimLocal.mas2j
 
@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MiningPlanet extends jason.environment.Environment {
+public class DeathStar extends jason.environment.Environment {
 
-    private Logger logger = Logger.getLogger("jasonTeamSimLocal.mas2j." + MiningPlanet.class.getName());
+    private Logger logger = Logger.getLogger("jasonTeamSimLocal.mas2j." + DeathStar.class.getName());
 
     WorldModel  model;
     WorldView   view;
@@ -94,7 +94,6 @@ public class MiningPlanet extends jason.environment.Environment {
                 result = model.fight(agId);
             } else if (action.equals(destroy)) {
                 result = model.destroy(agId);
-                //view.udpateCollectedGolds();
             } else if (action.equals(extinguish)) {
                 result = model.extinguish(agId);
             } else if (action.equals(siren_on)) {
@@ -107,9 +106,6 @@ public class MiningPlanet extends jason.environment.Environment {
                 logger.info("executing: " + action + ", but not implemented!");
             }
 			       
-			
-			
-            
             if (result) {
                 updateAgPercept(agId);
                 return true;
@@ -179,7 +175,6 @@ public class MiningPlanet extends jason.environment.Environment {
             model = WorldModel.world4();
             clearPercepts();
             addPercept(Literal.parseLiteral("gsize(" + simId + "," + model.getWidth() + "," + model.getHeight() + ")"));
-            //addPercept(Literal.parseLiteral("depot(" + simId + "," + model.getDepot().x + "," + model.getDepot().y + ")"));
             List<Location> base = model.getBase();
             addPercept(Literal.parseLiteral("base1(" + base.get(0).x + "," + base.get(0).y + ")"));
             addPercept(Literal.parseLiteral("base2(" + base.get(1).x + "," + base.get(1).y + ")"));
@@ -191,7 +186,6 @@ public class MiningPlanet extends jason.environment.Environment {
             if (hasGUI) {
                 view = new WorldView(model);
                 view.setEnv(this);
-                //view.udpateCollectedGolds();
             }
             updateAgsPercept();
             informAgsEnvironmentChanged();
@@ -248,17 +242,6 @@ public class MiningPlanet extends jason.environment.Environment {
                     updateAgPercept(agName, l.x + i, l.y + j);
                 }
             }
-            /*
-            updateAgPercept(agName, l.x - 1, l.y - 1);
-            updateAgPercept(agName, l.x - 1, l.y);
-            updateAgPercept(agName, l.x - 1, l.y + 1);
-            updateAgPercept(agName, l.x, l.y - 1);
-            updateAgPercept(agName, l.x, l.y);
-            updateAgPercept(agName, l.x, l.y + 1);
-            updateAgPercept(agName, l.x + 1, l.y - 1);
-            updateAgPercept(agName, l.x + 1, l.y);
-            updateAgPercept(agName, l.x + 1, l.y + 1);
-            */
         }
     }
 
@@ -293,5 +276,4 @@ public class MiningPlanet extends jason.environment.Environment {
             addPercept(agName, Literal.parseLiteral("cell(" + x + "," + y + ",fire)"));
         }
     }
-
 }

@@ -1,4 +1,4 @@
-package mining;
+package deathstar;
 
 import jason.environment.grid.GridWorldModel;
 import jason.environment.grid.Location;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import mining.MiningPlanet.Move;
+import deathstar.DeathStar.Move;
 
 public class WorldModel extends GridWorldModel {
 
@@ -21,10 +21,7 @@ public class WorldModel extends GridWorldModel {
     public static final int   SIREN_BLUE = 8192;
     
 
-    //Location                  depot;
-    Set<Integer>              agFighting;  // which agent is carrying gold
-    //int                       goldsInDepot   = 0;
-    //int                       initialNbGolds = 0;
+    Set<Integer>              agFighting;  // which agent is fighting
     List<Location>                base;
 
     private Logger            logger   = Logger.getLogger("jasonTeamSimLocal.mas2j." + WorldModel.class.getName());
@@ -67,11 +64,7 @@ public class WorldModel extends GridWorldModel {
     public String toString() {
         return id;
     }
-/*
-    public Location getDepot() {
-        return depot;
-    }
-*/
+
     public List<Location> getBase() {
         return base;
     }
@@ -79,33 +72,11 @@ public class WorldModel extends GridWorldModel {
     public Location getBase(int ag) {
         return base.get(ag);
     }
-/*
-    public int getGoldsInDepot() {
-        return goldsInDepot;
-    }
-
-    public boolean isAllGoldsCollected() {
-        return goldsInDepot == initialNbGolds;
-    }
-*/
-/*
-    public void setInitialNbGolds(int i) {
-        initialNbGolds = i;
-    }
-
-    public int getInitialNbGolds() {
-        return initialNbGolds;
-    }
-*/
+    
     public boolean isFigthing(int ag) {
         return agFighting.contains(ag);
     }
-/*
-    public void setDepot(int x, int y) {
-        depot = new Location(x, y);
-        data[x][y] = DEPOT;
-    }
-*/
+    
     public void addBase(int x, int y) {
         base.add(new Location(x, y));
     }
@@ -225,66 +196,25 @@ public class WorldModel extends GridWorldModel {
         }
     }
 
-    /*
-    public void clearAgView(int agId) {
-        clearAgView(getAgPos(agId).x, getAgPos(agId).y);
-    }
-
-    public void clearAgView(int x, int y) {
-        int e1 = ~(ENEMY + ALLY + GOLD);
-        if (x > 0 && y > 0) {
-            data[x - 1][y - 1] &= e1;
-        } // nw
-        if (y > 0) {
-            data[x][y - 1] &= e1;
-        } // n
-        if (x < (width - 1) && y > 0) {
-            data[x + 1][y - 1] &= e1;
-        } // ne
-
-        if (x > 0) {
-            data[x - 1][y] &= e1;
-        } // w
-        data[x][y] &= e1; // cur
-        if (x < (width - 1)) {
-            data[x + 1][y] &= e1;
-        } // e
-
-        if (x > 0 && y < (height - 1)) {
-            data[x - 1][y + 1] &= e1;
-        } // sw
-        if (y < (height - 1)) {
-            data[x][y + 1] &= e1;
-        } // s
-        if (x < (width - 1) && y < (height - 1)) {
-            data[x + 1][y + 1] &= e1;
-        } // se
-    }
-    */
-
-
-    /** no gold/no obstacle world */
+    /** no enemy/no fire/no obstacle world */
     static WorldModel world1() throws Exception {
         WorldModel model = WorldModel.create(21, 21, 4);
-        model.//setDepot(5, 7);
         model.setAgPos(0, 1, 0);
         model.setAgPos(1, 20, 0);
         model.setAgPos(2, 3, 20);
         model.setAgPos(3, 20, 20);
-        //model.setInitialNbGolds(model.countObjects(WorldModel.ENEMY));
         return model;
     }
 	
- /** world with gold and obstacles */
+ /** world with enemies, fires and obstacles */
     static WorldModel world4() throws Exception {
         WorldModel model = WorldModel.create(35, 35, 7);
         model.setId("Scenario 6");
-        //model.setDepot(16, 16);
         model.addBase(3, 29);
         model.addBase(31, 29);
         model.addBase(30, 4);
         model.addBase(4, 4);
-        model.addBase(8, 28);
+        model.addBase(24, 27);
         model.addBase(32, 33);
 
         //radar
@@ -301,7 +231,6 @@ public class WorldModel extends GridWorldModel {
 
 		//stormtroopers
         model.setAgPos(6, 22, 28);
-        //model.setAgPos(7, 30, 32);
 
         model.add(WorldModel.ENEMY, 20, 13);
         model.add(WorldModel.ENEMY, 15, 20);
@@ -372,7 +301,6 @@ public class WorldModel extends GridWorldModel {
 		//dot
 		model.add(WorldModel.OBSTACLE, 27, 30);
 		
-        //model.setInitialNbGolds(model.countObjects(WorldModel.ENEMY));
         return model;
     }	
 }
